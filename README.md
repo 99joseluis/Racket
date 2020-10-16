@@ -2,6 +2,8 @@
 Practicas y apuntes de Racket de Lenguajes 
 
 # # Integrantes
-__Fernández Romero Adrián__
-__García Santamaría José Luis__
-__Reyes Martínez Antonio__
+_Fernández Romero Adrián_
+
+_García Santamaría José Luis_
+
+_Reyes Martínez Antonio_
