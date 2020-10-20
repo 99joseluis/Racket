@@ -60,7 +60,12 @@
     [with (id value body)
           (union-listas (esta-en id value) (esta-en id body))]))
 
-
+(define (pertenece e l)
+  (match l
+    ['() empty]
+    [(cons x xs) (if (equal? e x)
+                     (pertenece e xs)
+                     (union-listas (list x) (pertenece e xs)))]))
 
 (define (es-libre e expr)
   (type-case WAE expr
@@ -71,7 +76,7 @@
     [add (izq der) (union-listas (es-libre e izq) (es-libre e der))]
     [sub (izq der) (union-listas (es-libre e izq) (es-libre e der))]
     [with (id value body)
-          (union-listas (es-libre e body) (es-libre id body))]))
+          (pertenece e (union-listas (es-libre e body) (es-libre id body)))]))
 
 (define (libre expr)
   (type-case WAE expr
