@@ -1,0 +1,31 @@
+#lang plai
+;; Punto extra
+;; Función que nos da el elemento más repetido en una lista. 
+;; Si hay dos o más elementos repetidos el mismo número de veces, devuelve el primero en aparecer de izquierda a derecha.
+;; masRepetido (listof a) -> number
+(define (masRepetido lista)
+  (repetidosM (car lista) lista))
+
+(define (repetidosM l lista)
+  (match lista
+    ['() 0]
+    [(cons x xs)
+     (let ([n1 (repetido x lista)]
+           [n2 (repetido xs lista)])
+       (if (> n1 n2) (repetidosM x (eliminaRepetidos (car xs) lista))
+           (repetidosM xs (eliminaRepetidos x lista))))])) 
+       
+
+;;Funcion que te da la suma de las repeticiones de l en una lista
+;; repetido symbol (listof ) -> int
+(define (repetido l lista)
+  (match lista
+    ['() 0]
+    [(cons x xs) (if (equal? x l)
+                     (+ 1 (repetido l (cdr lista)))
+                     (repetido l (cdr lista)))]))
+
+(define (eliminaRepetidos l lista)
+  (match lista
+    ['() empty]
+    [(cons x xs) (filter (lambda (y) (not (equal? x y))) xs)]))
