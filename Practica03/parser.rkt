@@ -10,21 +10,21 @@
 ;; parse: s-expression -> WAE
 (define (parse sexp)
   (cond
+    [(empty? sexp) (error "Exp vacía")]
+    [(number? sexp) (num sexp)]
     [(symbol? sexp) (id sexp)]
-    [(number? sexp) (num sexp)])
     [(list? sexp)
      (case (car sexp)
-       [(+) (op + (for/list ([i (cdr sexp)]) (parse i)))]
-       [(-) (op - (for/list ([i (cdr sexp)]) (parse i)))]
-       [(*) (op * (for/list ([i (cdr sexp)]) (parse i)))]
-       [(/) (op / (for/list ([i (cdr sexp)]) (parse i)))]
-       [(modulo) (op modulo (list (parse (second sexp)) (parse (third sexp))))]
-       [(expt) (op expt (list (parse (second sexp)) (parse (third sexp))))]
-       [(add1) (op add1 (list (parse (second sexp))))]
-       [(sub1) (op sub1 (list (parse (second sexp))))]
-       [(with) (with (for/list ([i (second sexp)]) (binding (first i) (parse (second i))))
-                     (parse (third sexp)))] ;Falta verificar que las expresiones recibidas son válidas
-       [(with) (with* (for/list ([i (second sexp)]) (binding (first i) (parse (second i))))
-                     (parse (third sexp)))] ;Falta verificar que las expresiones recibidas son válidas
-       )]
-  )
+       [(+) (if (< (length sexp) 3) (error "Argumento invalido") (op + (parse (cdr sexp))))]
+       [(-) (if (< (length sexp) 3) (error "Argumento invalido") (op - (parse (cdr sexp))))]
+       [(*) (if (< (length sexp) 3) (error "Argumento invalido") (op * (parse (cdr sexp))))]
+       [(/) (if (< (length sexp) 3) (error "Argumento invalido") (op / (parse (cdr sexp))))]
+       [(modulo) (if (< (length sexp) 3) (error "Argumento invalido") (op modulo (parse (cdr sexp))))]
+       [(expt) (if (< (length sexp) 3) (error "Argumento invalido") (op expt (parse (cdr sexp))))]
+       [(add1) (if (< (length sexp) 2) (error "Argumento invalido") (op add1 (parse (cdr sexp))))]
+       [(sub1) (if (< (length sexp) 2) (error "Argumento invalido") (op sub1 (parse (cdr sexp))))]
+       [(with) (with (for/list ([i (car (cdr sexp))]) (binding (car i) (parse (cadr i))))
+                (parse (cadr (cdr sexp))))]
+       [(with*) (with* (for/list ([i (car (cdr sexp))]) (binding (car i) (parse (cadr i))))
+                 (parse (cadr (cdr sexp))))]
+       [else (for/list ([i sexp]) (parse i))])]))
